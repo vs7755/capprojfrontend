@@ -1,0 +1,30 @@
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post("http://localhost:8080/api/users/userlogin", {
+      email: formData.email,
+      password: formData.password
+    });
+
+    console.log("Login response:", res.data);
+
+    // case 1: backend returns plain string
+    if (typeof res.data === "string") {
+      setMessage(res.data);
+      if (res.data.includes("Login successful")) {
+        navigate("/UserDashboard");
+      }
+    }
+
+    // case 2: backend returns JSON object
+    else if (typeof res.data === "object") {
+      setMessage(res.data.message || "");
+      if (res.data.status === "OK") {
+        navigate("/UserDashboard");
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    setMessage("Server error. Please try again.");
+  }
+};
